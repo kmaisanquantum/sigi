@@ -1,0 +1,1350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Deeps Systems — OpsCentre</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg-base: #0a0d12;
+  --bg-panel: #111520;
+  --bg-card: #161c2a;
+  --bg-input: #1c2438;
+  --border: #232e45;
+  --border-bright: #2e3d5c;
+  --accent: #f97316;
+  --accent-dim: rgba(249,115,22,0.15);
+  --accent-glow: rgba(249,115,22,0.35);
+  --green: #22c55e;
+  --green-dim: rgba(34,197,94,0.12);
+  --red: #ef4444;
+  --red-dim: rgba(239,68,68,0.12);
+  --yellow: #eab308;
+  --yellow-dim: rgba(234,179,8,0.12);
+  --blue: #3b82f6;
+  --text-primary: #e8edf5;
+  --text-secondary: #8094b4;
+  --text-muted: #4d607e;
+  --font-display: 'Barlow Condensed', sans-serif;
+  --font-body: 'Barlow', sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+  --radius: 6px;
+  --nav-h: 60px;
+}
+
+html, body {
+  background: var(--bg-base);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+/* ── NOISE OVERLAY ─────────────────────────────── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1000;
+}
+
+/* ── TOP NAV ───────────────────────────────────── */
+.topnav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: var(--nav-h);
+  background: rgba(10,13,18,0.92);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  z-index: 100;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-icon {
+  width: 34px; height: 34px;
+  background: var(--accent);
+  border-radius: 4px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 18px;
+  color: #000;
+  letter-spacing: -0.5px;
+  flex-shrink: 0;
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+.brand-name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 17px;
+  letter-spacing: 0.5px;
+  color: var(--text-primary);
+}
+.brand-sub {
+  font-size: 10px;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.nav-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+}
+.status-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 8px var(--green);
+  animation: pulse-dot 2s infinite;
+}
+@keyframes pulse-dot {
+  0%,100% { opacity: 1; } 50% { opacity: 0.4; }
+}
+
+.nav-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+.avatar {
+  width: 32px; height: 32px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-bright);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--accent);
+}
+
+/* ── BOTTOM MOBILE NAV ─────────────────────────── */
+.bottom-nav {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: 62px;
+  background: rgba(10,13,18,0.96);
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  backdrop-filter: blur(12px);
+  z-index: 100;
+}
+
+.nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  cursor: pointer;
+  padding: 8px 4px;
+  color: var(--text-muted);
+  transition: color 0.15s;
+  border: none;
+  background: none;
+  font-family: var(--font-body);
+  position: relative;
+}
+.nav-item.active { color: var(--accent); }
+.nav-item svg { width: 22px; height: 22px; }
+.nav-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.nav-badge {
+  position: absolute;
+  top: 6px; right: calc(50% - 18px);
+  background: var(--red);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  padding: 1px 5px;
+  border-radius: 10px;
+  min-width: 16px;
+  text-align: center;
+}
+
+/* ── MAIN LAYOUT ───────────────────────────────── */
+main {
+  padding-top: var(--nav-h);
+  padding-bottom: 70px;
+  min-height: 100vh;
+}
+
+.view { display: none; }
+.view.active { display: block; }
+
+/* ── SECTION HEADER ────────────────────────────── */
+.page-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 24px 20px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.page-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 28px;
+  letter-spacing: 0.5px;
+  line-height: 1;
+  color: var(--text-primary);
+}
+.page-title span { color: var(--accent); }
+.page-sub {
+  font-size: 12px;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* ── DASHBOARD ─────────────────────────────────── */
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 16px 16px 0;
+}
+
+.stat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  position: relative;
+  overflow: hidden;
+}
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--c, var(--accent));
+}
+.stat-label {
+  font-size: 10px;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.stat-val {
+  font-family: var(--font-display);
+  font-size: 40px;
+  font-weight: 800;
+  line-height: 1.1;
+  margin-top: 4px;
+  color: var(--c, var(--text-primary));
+}
+.stat-delta {
+  font-size: 11px;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+.stat-delta.up { color: var(--green); }
+.stat-delta.dn { color: var(--red); }
+
+.dash-section {
+  padding: 20px 16px 8px;
+}
+.dash-section-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
+
+/* ── INCIDENT CARDS ────────────────────────────── */
+.incident-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--sev-color, var(--border));
+  border-radius: var(--radius);
+  padding: 14px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: border-color 0.15s, transform 0.1s;
+  animation: slide-up 0.3s ease both;
+}
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.incident-card:active { transform: scale(0.99); }
+
+.card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+.card-ref {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+}
+.card-badges {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+.badge {
+  font-size: 10px;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 3px;
+  letter-spacing: 0.5px;
+}
+.badge-sev-critical { background: rgba(239,68,68,0.2); color: #fca5a5; }
+.badge-sev-high     { background: rgba(249,115,22,0.2); color: #fdba74; }
+.badge-sev-medium   { background: rgba(234,179,8,0.2); color: #fde047; }
+.badge-sev-low      { background: rgba(34,197,94,0.15); color: #86efac; }
+.badge-status-open        { background: rgba(59,130,246,0.15); color: #93c5fd; }
+.badge-status-in_progress { background: rgba(249,115,22,0.15); color: #fdba74; }
+.badge-status-resolved    { background: rgba(34,197,94,0.15); color: #86efac; }
+
+.card-title {
+  font-weight: 600;
+  font-size: 15px;
+  margin-top: 8px;
+  line-height: 1.3;
+}
+.card-meta {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+  font-size: 12px;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+}
+.card-loc {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* ── FORM ──────────────────────────────────────── */
+.form-wrap {
+  padding: 16px;
+}
+
+.form-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.form-section {
+  padding: 16px;
+  border-bottom: 1px solid var(--border);
+}
+.form-section:last-child { border-bottom: none; }
+
+.form-section-label {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.form-section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.form-row.full { grid-template-columns: 1fr; }
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.field label {
+  font-size: 11px;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+.field input,
+.field select,
+.field textarea {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 14px;
+  padding: 10px 12px;
+  outline: none;
+  transition: border-color 0.15s;
+  width: 100%;
+  -webkit-appearance: none;
+}
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-dim);
+}
+.field textarea {
+  resize: vertical;
+  min-height: 90px;
+}
+.field select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238094b4' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 32px;
+}
+option { background: var(--bg-input); }
+
+/* ── SEVERITY SELECTOR ─────────────────────────── */
+.sev-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+.sev-btn {
+  border: 1px solid var(--border);
+  background: var(--bg-input);
+  border-radius: 4px;
+  padding: 8px 4px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.15s;
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+}
+.sev-btn:active { transform: scale(0.96); }
+.sev-btn[data-sev="low"].selected    { background: var(--green-dim); border-color: var(--green); color: var(--green); }
+.sev-btn[data-sev="medium"].selected { background: var(--yellow-dim); border-color: var(--yellow); color: var(--yellow); }
+.sev-btn[data-sev="high"].selected   { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+.sev-btn[data-sev="critical"].selected { background: var(--red-dim); border-color: var(--red); color: var(--red); }
+
+/* ── PHOTO UPLOAD ──────────────────────────────── */
+.photo-zone {
+  border: 2px dashed var(--border-bright);
+  border-radius: var(--radius);
+  padding: 24px 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  position: relative;
+}
+.photo-zone:hover, .photo-zone.drag { border-color: var(--accent); background: var(--accent-dim); }
+.photo-zone input[type=file] { display: none; }
+.photo-zone-icon { font-size: 32px; margin-bottom: 8px; }
+.photo-zone-text { font-size: 13px; color: var(--text-secondary); }
+.photo-zone-hint { font-size: 11px; font-family: var(--font-mono); color: var(--text-muted); margin-top: 4px; }
+
+.photo-previews {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 12px;
+}
+.preview-item {
+  aspect-ratio: 1;
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+}
+.preview-item img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.preview-remove {
+  position: absolute;
+  top: 4px; right: 4px;
+  background: rgba(0,0,0,0.7);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 20px; height: 20px;
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 20px;
+  text-align: center;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* ── GPS STRIP ─────────────────────────────────── */
+.gps-strip {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.gps-strip:hover { border-color: var(--accent); }
+.gps-icon { color: var(--accent); flex-shrink: 0; }
+.gps-text { font-size: 13px; color: var(--text-secondary); flex: 1; }
+.gps-text.acquired { color: var(--green); font-family: var(--font-mono); font-size: 11px; }
+.gps-spinner {
+  width: 16px; height: 16px;
+  border: 2px solid var(--border-bright);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── SUBMIT BUTTON ─────────────────────────────── */
+.btn-primary {
+  width: 100%;
+  background: var(--accent);
+  color: #000;
+  border: none;
+  border-radius: var(--radius);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 18px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.15s;
+  margin-top: 16px;
+  position: relative;
+  overflow: hidden;
+}
+.btn-primary:active { transform: scale(0.98); }
+.btn-primary:disabled {
+  background: var(--bg-input);
+  color: var(--text-muted);
+  cursor: not-allowed;
+}
+.btn-primary .btn-glow {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, transparent, rgba(255,255,255,0.15), transparent);
+  transform: translateX(-100%);
+}
+.btn-primary:not(:disabled):hover .btn-glow {
+  animation: shimmer 0.6s ease;
+}
+@keyframes shimmer {
+  to { transform: translateX(100%); }
+}
+
+.btn-secondary {
+  background: var(--bg-input);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 14px;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+/* ── TOAST ─────────────────────────────────────── */
+.toast {
+  position: fixed;
+  top: 72px;
+  left: 50%; transform: translateX(-50%);
+  background: var(--bg-card);
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius);
+  padding: 12px 20px;
+  font-size: 13px;
+  font-family: var(--font-mono);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 200;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  animation: toast-in 0.3s ease;
+  white-space: nowrap;
+}
+.toast.success { border-color: var(--green); color: var(--green); }
+.toast.error   { border-color: var(--red); color: var(--red); }
+@keyframes toast-in {
+  from { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* ── ASSET HEALTH ──────────────────────────────── */
+.asset-list { padding: 16px; }
+.asset-item {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  animation: slide-up 0.3s ease both;
+}
+.asset-icon {
+  width: 40px; height: 40px;
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.asset-icon.online   { background: var(--green-dim); }
+.asset-icon.offline  { background: var(--red-dim); }
+.asset-icon.degraded { background: var(--yellow-dim); }
+
+.asset-info { flex: 1; min-width: 0; }
+.asset-name { font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.asset-tag  { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); }
+
+.asset-metrics { text-align: right; }
+.metric-val { font-family: var(--font-mono); font-size: 13px; }
+.metric-val.ok   { color: var(--green); }
+.metric-val.warn { color: var(--yellow); }
+.metric-val.crit { color: var(--red); }
+.metric-label { font-size: 10px; color: var(--text-muted); }
+
+/* ── PATROL VIEW ───────────────────────────────── */
+.patrol-wrap { padding: 16px; }
+.checkin-hero {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px 20px;
+  text-align: center;
+  margin-bottom: 16px;
+}
+.checkin-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 22px;
+  margin-bottom: 4px;
+}
+.checkin-sub {
+  font-size: 12px;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  margin-bottom: 20px;
+}
+.checkin-btn {
+  width: 100px; height: 100px;
+  border-radius: 50%;
+  border: 3px solid var(--accent);
+  background: var(--accent-dim);
+  color: var(--accent);
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  margin: 0 auto 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  transition: all 0.2s;
+  box-shadow: 0 0 20px var(--accent-glow);
+}
+.checkin-btn:active { transform: scale(0.94); }
+.checkin-btn svg { width: 28px; height: 28px; }
+
+.patrol-log-list { }
+.patrol-entry {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+.patrol-time {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  width: 60px;
+  flex-shrink: 0;
+}
+.patrol-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--green);
+  flex-shrink: 0;
+}
+.patrol-info { flex: 1; }
+.patrol-checkpoint { font-size: 14px; font-weight: 500; }
+.patrol-coords { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); }
+
+/* ── SUCCESS MODAL ─────────────────────────────── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(4px);
+  z-index: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s;
+}
+.modal-overlay.open {
+  opacity: 1;
+  pointer-events: all;
+}
+.modal {
+  background: var(--bg-card);
+  border: 1px solid var(--border-bright);
+  border-radius: 10px;
+  padding: 28px 24px;
+  max-width: 340px;
+  width: 100%;
+  text-align: center;
+  transform: scale(0.9);
+  transition: transform 0.25s;
+}
+.modal-overlay.open .modal { transform: scale(1); }
+.modal-icon { font-size: 48px; margin-bottom: 12px; }
+.modal-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 24px;
+  margin-bottom: 6px;
+}
+.modal-ref {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+.modal-body { font-size: 13px; color: var(--text-secondary); margin-bottom: 20px; }
+
+@media (min-width: 640px) {
+  .stats-grid { grid-template-columns: repeat(4, 1fr); }
+  .form-row { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<nav class="topnav">
+  <div class="brand">
+    <div class="brand-icon">DS</div>
+    <div class="brand-text">
+      <div class="brand-name">OPSCENTRE</div>
+      <div class="brand-sub">Deeps Systems</div>
+    </div>
+  </div>
+  <div class="nav-status">
+    <div class="status-dot"></div>
+    <span>LIVE</span>
+  </div>
+  <div class="nav-user">
+    <span style="display:none" id="userName">G. Kila</span>
+    <div class="avatar">GK</div>
+  </div>
+</nav>
+
+<!-- MAIN CONTENT -->
+<main>
+
+  <!-- ─── DASHBOARD ─── -->
+  <div class="view active" id="view-dashboard">
+    <div class="page-header">
+      <div>
+        <div class="page-title">DASH<span>BOARD</span></div>
+        <div class="page-sub" id="dashDate">Loading…</div>
+      </div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card" style="--c: var(--green)">
+        <div class="stat-label">Active Patrols</div>
+        <div class="stat-val">3</div>
+        <div class="stat-delta up">↑ On shift</div>
+      </div>
+      <div class="stat-card" style="--c: var(--red)">
+        <div class="stat-label">Open Incidents</div>
+        <div class="stat-val" id="openCount">7</div>
+        <div class="stat-delta dn">↑ 2 today</div>
+      </div>
+      <div class="stat-card" style="--c: var(--yellow)">
+        <div class="stat-label">Assets Offline</div>
+        <div class="stat-val">2</div>
+        <div class="stat-delta">of 34 total</div>
+      </div>
+      <div class="stat-card" style="--c: var(--blue)">
+        <div class="stat-label">Check-ins Today</div>
+        <div class="stat-val">41</div>
+        <div class="stat-delta up">↑ 94% coverage</div>
+      </div>
+    </div>
+
+    <div class="dash-section">
+      <div class="dash-section-title">Recent Incidents</div>
+      <div id="dashIncidents"></div>
+    </div>
+  </div>
+
+  <!-- ─── PATROL LOGS ─── -->
+  <div class="view" id="view-patrol">
+    <div class="page-header">
+      <div>
+        <div class="page-title">PATROL <span>LOGS</span></div>
+        <div class="page-sub">GPS-stamped check-ins</div>
+      </div>
+    </div>
+    <div class="patrol-wrap">
+      <div class="checkin-hero">
+        <div class="checkin-title">Quick Check-In</div>
+        <div class="checkin-sub" id="checkinStatus">Ready to record position</div>
+        <div class="checkin-btn" onclick="doCheckin()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/>
+          </svg>
+          CHECK IN
+        </div>
+      </div>
+      <div class="dash-section-title">Today's Log</div>
+      <div id="patrolLogList"></div>
+    </div>
+  </div>
+
+  <!-- ─── INCIDENT REPORT ─── -->
+  <div class="view" id="view-incidents">
+    <div class="page-header">
+      <div>
+        <div class="page-title">INCIDENT <span>REPORT</span></div>
+        <div class="page-sub">File a new incident or view history</div>
+      </div>
+      <button class="btn-secondary" onclick="toggleView('new-report', this)">+ New</button>
+    </div>
+
+    <!-- New Report Form -->
+    <div id="new-report" style="display:none">
+      <div class="form-wrap">
+        <div class="form-card">
+
+          <div class="form-section">
+            <div class="form-section-label">Incident Details</div>
+            <div class="form-row full">
+              <div class="field">
+                <label>Title / Summary *</label>
+                <input type="text" id="f-title" placeholder="Brief description of the incident" maxlength="300">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="field">
+                <label>Category *</label>
+                <select id="f-category">
+                  <option value="">— Select —</option>
+                  <option value="theft">Theft</option>
+                  <option value="vandalism">Vandalism</option>
+                  <option value="trespass">Trespass</option>
+                  <option value="access_breach">Access Breach</option>
+                  <option value="suspicious_activity">Suspicious Activity</option>
+                  <option value="medical">Medical</option>
+                  <option value="fire">Fire</option>
+                  <option value="equipment_fault">Equipment Fault</option>
+                  <option value="workplace_injury">Workplace Injury</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Occurred At *</label>
+                <input type="datetime-local" id="f-occurred">
+              </div>
+            </div>
+            <div class="form-row full">
+              <div class="field">
+                <label>Full Description *</label>
+                <textarea id="f-description" placeholder="Describe what happened in detail — who, what, when, where, how…"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <div class="form-section-label">Severity</div>
+            <div class="sev-grid">
+              <div class="sev-btn" data-sev="low" onclick="setSev(this)">Low</div>
+              <div class="sev-btn selected" data-sev="medium" onclick="setSev(this)">Medium</div>
+              <div class="sev-btn" data-sev="high" onclick="setSev(this)">High</div>
+              <div class="sev-btn" data-sev="critical" onclick="setSev(this)">⚠ Crit</div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <div class="form-section-label">Location</div>
+            <div class="gps-strip" onclick="captureGPS()" id="gpsStrip">
+              <div class="gps-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/>
+                  <line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/>
+                  <line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/>
+                </svg>
+              </div>
+              <div class="gps-text" id="gpsText">Tap to capture GPS coordinates</div>
+              <div id="gpsSpinner" style="display:none" class="gps-spinner"></div>
+            </div>
+            <div class="field" style="margin-top:10px">
+              <label>Location Description</label>
+              <input type="text" id="f-location" placeholder="e.g. Gate 2, North Perimeter, Server Room B">
+            </div>
+          </div>
+
+          <div class="form-section">
+            <div class="form-section-label">Evidence / Photos</div>
+            <div class="photo-zone" id="photoZone" onclick="document.getElementById('photoInput').click()"
+                 ondragover="event.preventDefault();this.classList.add('drag')"
+                 ondragleave="this.classList.remove('drag')"
+                 ondrop="handleDrop(event)">
+              <input type="file" id="photoInput" multiple accept="image/*" onchange="handleFiles(this.files)">
+              <div class="photo-zone-icon">📷</div>
+              <div class="photo-zone-text">Tap to attach photos</div>
+              <div class="photo-zone-hint">JPEG · PNG · WEBP · max 15 MB each</div>
+            </div>
+            <div class="photo-previews" id="photoPreviews"></div>
+          </div>
+
+        </div>
+
+        <button class="btn-primary" onclick="submitIncident()" id="submitBtn">
+          <div class="btn-glow"></div>
+          SUBMIT INCIDENT REPORT
+        </button>
+      </div>
+    </div>
+
+    <!-- Incident List -->
+    <div id="incident-list-view">
+      <div style="padding:16px">
+        <div id="incidentsList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── ASSET HEALTH ─── -->
+  <div class="view" id="view-assets">
+    <div class="page-header">
+      <div>
+        <div class="page-title">ASSET <span>HEALTH</span></div>
+        <div class="page-sub">Network hardware monitoring</div>
+      </div>
+    </div>
+    <div class="asset-list" id="assetList"></div>
+  </div>
+
+</main>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <button class="nav-item active" onclick="navigate('dashboard', this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+      <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
+    </svg>
+    <span class="nav-label">Dashboard</span>
+  </button>
+  <button class="nav-item" onclick="navigate('patrol', this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z"/>
+      <circle cx="12" cy="10" r="3"/>
+    </svg>
+    <span class="nav-label">Patrol</span>
+  </button>
+  <button class="nav-item" onclick="navigate('incidents', this)">
+    <div class="nav-badge" id="incBadge">7</div>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+      <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+    </svg>
+    <span class="nav-label">Incidents</span>
+  </button>
+  <button class="nav-item" onclick="navigate('assets', this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/>
+      <line x1="12" y1="17" x2="12" y2="21"/>
+    </svg>
+    <span class="nav-label">Assets</span>
+  </button>
+</nav>
+
+<!-- SUCCESS MODAL -->
+<div class="modal-overlay" id="successModal">
+  <div class="modal">
+    <div class="modal-icon">✅</div>
+    <div class="modal-title">Report Submitted</div>
+    <div class="modal-ref" id="modalRef">INC-20240426-0001</div>
+    <div class="modal-body">Your incident report has been logged and supervisors have been notified.</div>
+    <button class="btn-primary" onclick="closeModal()" style="margin-top:0">DONE</button>
+  </div>
+</div>
+
+<script>
+// ── STATE ──────────────────────────────────────
+const state = {
+  severity: 'medium',
+  photos: [],
+  gps: null,
+  incidents: [],
+  patrolLogs: [],
+};
+
+// ── SAMPLE DATA ────────────────────────────────
+const SAMPLE_INCIDENTS = [
+  { id:1, reference_no:'INC-20240426-0007', title:'Unauthorised vehicle at Gate 2', category:'trespass', severity:'high', status:'open', occurred_at:'2024-04-26T14:30', location_desc:'Gate 2 - North Entry' },
+  { id:2, reference_no:'INC-20240426-0006', title:'CCTV camera offline - Sector D', category:'equipment_fault', severity:'medium', status:'in_progress', occurred_at:'2024-04-26T11:15', location_desc:'Sector D Tower' },
+  { id:3, reference_no:'INC-20240426-0005', title:'Perimeter fence cut at rear boundary', category:'vandalism', severity:'critical', status:'open', occurred_at:'2024-04-26T07:42', location_desc:'Rear Boundary - KP 14' },
+  { id:4, reference_no:'INC-20240425-0012', title:'Minor injury during patrol', category:'workplace_injury', severity:'low', status:'resolved', occurred_at:'2024-04-25T22:10', location_desc:'Checkpoint 7' },
+  { id:5, reference_no:'INC-20240425-0011', title:'Suspicious persons loitering', category:'suspicious_activity', severity:'medium', status:'open', occurred_at:'2024-04-25T20:05', location_desc:'West parking area' },
+];
+
+const SAMPLE_PATROL = [
+  { time:'15:22', checkpoint:'Gate 2 North', coords:'-9.4438, 147.1803' },
+  { time:'14:55', checkpoint:'Sector D Tower', coords:'-9.4441, 147.1799' },
+  { time:'14:30', checkpoint:'Main Control Room', coords:'-9.4435, 147.1808' },
+  { time:'13:48', checkpoint:'Rear Boundary KP14', coords:'-9.4450, 147.1812' },
+  { time:'13:15', checkpoint:'Gate 1 South', coords:'-9.4430, 147.1796' },
+];
+
+const SAMPLE_ASSETS = [
+  { name:'CAM-001 Gate 2 CCTV', tag:'CAM-001', type:'📷', status:'online', ping:12, cpu:28 },
+  { name:'CAM-002 Sector D', tag:'CAM-002', type:'📷', status:'offline', ping:null, cpu:null },
+  { name:'NVR-MAIN Recorder', tag:'NVR-01', type:'🖥', status:'online', ping:3, cpu:62 },
+  { name:'SW-CORE-01 Switch', tag:'SW-01', type:'🌐', status:'online', ping:1, cpu:14 },
+  { name:'AP-PATROL-01 WiFi', tag:'AP-01', type:'📡', status:'degraded', ping:89, cpu:44 },
+  { name:'UPS-SERVER Room', tag:'UPS-01', type:'🔋', status:'online', ping:5, cpu:20 },
+];
+
+// ── NAVIGATION ─────────────────────────────────
+function navigate(view, btn) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById(`view-${view}`).classList.add('active');
+  btn.classList.add('active');
+}
+
+function toggleView(id, btn) {
+  const el = document.getElementById(id);
+  const listEl = document.getElementById('incident-list-view');
+  const isHidden = el.style.display === 'none';
+  el.style.display = isHidden ? 'block' : 'none';
+  if(listEl) listEl.style.display = isHidden ? 'none' : 'block';
+  btn.textContent = isHidden ? '✕ Close' : '+ New';
+}
+
+// ── SEVERITY ───────────────────────────────────
+function setSev(el) {
+  document.querySelectorAll('.sev-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+  state.severity = el.dataset.sev;
+}
+
+// ── GPS ────────────────────────────────────────
+function captureGPS() {
+  const strip = document.getElementById('gpsStrip');
+  const text = document.getElementById('gpsText');
+  const spinner = document.getElementById('gpsSpinner');
+  spinner.style.display = 'block';
+  text.textContent = 'Acquiring GPS…';
+  text.className = 'gps-text';
+  navigator.geolocation?.getCurrentPosition(
+    (pos) => {
+      state.gps = { lat: pos.coords.latitude.toFixed(6), lng: pos.coords.longitude.toFixed(6) };
+      spinner.style.display = 'none';
+      text.textContent = `${state.gps.lat}, ${state.gps.lng} (±${Math.round(pos.coords.accuracy)}m)`;
+      text.className = 'gps-text acquired';
+    },
+    () => {
+      // Simulate for demo
+      state.gps = { lat: '-9.443800', lng: '147.180300' };
+      spinner.style.display = 'none';
+      text.textContent = `-9.443800, 147.180300 (±8m) [DEMO]`;
+      text.className = 'gps-text acquired';
+    },
+    { timeout: 8000, enableHighAccuracy: true }
+  );
+}
+
+// ── PHOTO UPLOAD ────────────────────────────────
+function handleFiles(files) {
+  [...files].forEach(file => {
+    if(!file.type.startsWith('image/')) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      state.photos.push({ name: file.name, data: e.target.result, size: file.size });
+      renderPreviews();
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('photoZone').classList.remove('drag');
+  handleFiles(e.dataTransfer.files);
+}
+
+function renderPreviews() {
+  const cont = document.getElementById('photoPreviews');
+  cont.innerHTML = state.photos.map((p, i) => `
+    <div class="preview-item">
+      <img src="${p.data}" alt="${p.name}">
+      <button class="preview-remove" onclick="removePhoto(${i})">✕</button>
+    </div>`).join('');
+}
+
+function removePhoto(i) {
+  state.photos.splice(i, 1);
+  renderPreviews();
+}
+
+// ── SUBMIT ─────────────────────────────────────
+function submitIncident() {
+  const title = document.getElementById('f-title').value.trim();
+  const category = document.getElementById('f-category').value;
+  const occurred = document.getElementById('f-occurred').value;
+  const desc = document.getElementById('f-description').value.trim();
+
+  if (!title || !category || !occurred || !desc) {
+    showToast('Please fill in all required fields (*)', 'error');
+    return;
+  }
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = 'SUBMITTING…';
+
+  // Simulate API call
+  setTimeout(() => {
+    const ref = `INC-${new Date().toISOString().slice(0,10).replace(/-/g,'')}` +
+                `-${String(state.incidents.length + 1).padStart(4,'0')}`;
+    const newInc = {
+      id: Date.now(),
+      reference_no: ref,
+      title, category,
+      severity: state.severity,
+      status: 'open',
+      occurred_at: occurred,
+      location_desc: document.getElementById('f-location').value || 'Not specified',
+    };
+    state.incidents.unshift(newInc);
+    SAMPLE_INCIDENTS.unshift(newInc);
+
+    // Reset form
+    ['f-title','f-category','f-occurred','f-description','f-location'].forEach(id => {
+      document.getElementById(id).value = '';
+    });
+    state.photos = [];
+    state.gps = null;
+    document.getElementById('photoPreviews').innerHTML = '';
+    document.getElementById('gpsText').textContent = 'Tap to capture GPS coordinates';
+    document.getElementById('gpsText').className = 'gps-text';
+
+    btn.disabled = false;
+    btn.innerHTML = '<div class="btn-glow"></div>SUBMIT INCIDENT REPORT';
+
+    document.getElementById('modalRef').textContent = ref;
+    document.getElementById('successModal').classList.add('open');
+
+    renderIncidents();
+    updateBadge();
+  }, 1400);
+}
+
+function closeModal() {
+  document.getElementById('successModal').classList.remove('open');
+  // Close form, show list
+  document.getElementById('new-report').style.display = 'none';
+  document.getElementById('incident-list-view').style.display = 'block';
+  document.querySelector('#view-incidents .btn-secondary').textContent = '+ New';
+}
+
+// ── TOAST ──────────────────────────────────────
+function showToast(msg, type='success') {
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.innerHTML = `<span>${type === 'success' ? '✓' : '⚠'}</span>${msg}`;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 3500);
+}
+
+// ── RENDER INCIDENTS ────────────────────────────
+function incidentCard(inc, delay=0) {
+  const sevColors = { low:'var(--green)', medium:'var(--yellow)', high:'var(--accent)', critical:'var(--red)' };
+  const date = new Date(inc.occurred_at);
+  const timeStr = date.toLocaleTimeString('en-AU', { hour:'2-digit', minute:'2-digit' });
+  const dateStr = date.toLocaleDateString('en-AU', { day:'2-digit', month:'short' });
+  return `
+  <div class="incident-card" style="--sev-color:${sevColors[inc.severity]};animation-delay:${delay}ms">
+    <div class="card-top">
+      <span class="card-ref">${inc.reference_no}</span>
+      <div class="card-badges">
+        <span class="badge badge-sev-${inc.severity}">${inc.severity}</span>
+        <span class="badge badge-status-${inc.status}">${inc.status.replace('_',' ')}</span>
+      </div>
+    </div>
+    <div class="card-title">${inc.title}</div>
+    <div class="card-meta">
+      <span>${dateStr} ${timeStr}</span>
+      ${inc.location_desc ? `<span class="card-loc"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="10" r="3"/><path d="M12 2C8.1 2 5 5.1 5 9c0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3.1-7-7-7z"/></svg>${inc.location_desc}</span>` : ''}
+    </div>
+  </div>`;
+}
+
+function renderIncidents() {
+  const list = document.getElementById('incidentsList');
+  const dash = document.getElementById('dashIncidents');
+  const html = SAMPLE_INCIDENTS.map((inc,i) => incidentCard(inc, i*60)).join('');
+  if(list) list.innerHTML = html;
+  if(dash) dash.innerHTML = SAMPLE_INCIDENTS.slice(0,3).map((inc,i) => incidentCard(inc,i*60)).join('');
+}
+
+function updateBadge() {
+  const open = SAMPLE_INCIDENTS.filter(i => i.status === 'open').length;
+  document.getElementById('incBadge').textContent = open;
+  document.getElementById('openCount').textContent = open;
+}
+
+// ── PATROL ─────────────────────────────────────
+function renderPatrol() {
+  const list = document.getElementById('patrolLogList');
+  list.innerHTML = SAMPLE_PATROL.map(e => `
+    <div class="patrol-entry">
+      <div class="patrol-time">${e.time}</div>
+      <div class="patrol-dot"></div>
+      <div class="patrol-info">
+        <div class="patrol-checkpoint">${e.checkpoint}</div>
+        <div class="patrol-coords">${e.coords}</div>
+      </div>
+    </div>`).join('');
+}
+
+let checking = false;
+function doCheckin() {
+  if(checking) return;
+  checking = true;
+  const status = document.getElementById('checkinStatus');
+  status.textContent = 'Acquiring GPS position…';
+  setTimeout(() => {
+    const now = new Date();
+    const t = now.toLocaleTimeString('en-AU', { hour:'2-digit', minute:'2-digit' });
+    SAMPLE_PATROL.unshift({ time:t, checkpoint:'GPS Check-in', coords:'-9.443800, 147.180300' });
+    renderPatrol();
+    status.textContent = `Checked in at ${t} ✓`;
+    checking = false;
+    showToast(`Check-in recorded at ${t}`, 'success');
+    setTimeout(() => { status.textContent = 'Ready to record position'; }, 4000);
+  }, 1200);
+}
+
+// ── ASSETS ─────────────────────────────────────
+function renderAssets() {
+  const list = document.getElementById('assetList');
+  list.innerHTML = SAMPLE_ASSETS.map((a,i) => {
+    const pingClass = a.ping === null ? 'crit' : a.ping > 50 ? 'warn' : 'ok';
+    const cpuClass  = a.cpu  === null ? 'crit' : a.cpu  > 80  ? 'warn' : 'ok';
+    return `
+    <div class="asset-item" style="animation-delay:${i*70}ms">
+      <div class="asset-icon ${a.status}">${a.type}</div>
+      <div class="asset-info">
+        <div class="asset-name">${a.name}</div>
+        <div class="asset-tag">${a.tag} · ${a.status.toUpperCase()}</div>
+      </div>
+      <div class="asset-metrics">
+        <div class="metric-val ${pingClass}">${a.ping !== null ? a.ping+'ms' : 'OFFLINE'}</div>
+        <div class="metric-label">Ping</div>
+        <div class="metric-val ${cpuClass}" style="margin-top:4px">${a.cpu !== null ? a.cpu+'%' : '—'}</div>
+        <div class="metric-label">CPU</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── INIT ───────────────────────────────────────
+(function init() {
+  // Set datetime default
+  const now = new Date();
+  document.getElementById('f-occurred').value = now.toISOString().slice(0,16);
+
+  // Dashboard date
+  document.getElementById('dashDate').textContent =
+    now.toLocaleDateString('en-AU', { weekday:'long', day:'numeric', month:'long', year:'numeric' }) +
+    ' · Port Moresby, PNG';
+
+  renderIncidents();
+  renderPatrol();
+  renderAssets();
+  updateBadge();
+})();
+</script>
+
+</body>
+</html>
