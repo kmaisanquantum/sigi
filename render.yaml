@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: sigi
+    env: python
+    region: singapore
+    plan: free
+    runtime: python
+    buildCommand: "./build"
+    startCommand: "./start"
